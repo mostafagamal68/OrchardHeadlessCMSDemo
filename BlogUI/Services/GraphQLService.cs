@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using BlogUI.Model;
+using static System.Net.WebRequestMethods;
 
 namespace BlogUI.Services
 {
@@ -11,40 +12,74 @@ namespace BlogUI.Services
         private readonly HttpClient _client;
         private readonly JsonSerializerOptions _options;
         private readonly string uri = "https://localhost:7022/api/graphql";
-
+        private List<RequestHeader> requestHeaders = new List<RequestHeader>()
+        {
+            new RequestHeader() { Name = "Content-Type", Value = "application/graphql" },
+        };
         public GraphQLService(HttpClient client)
         {
             _client = client;
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "CfDJ8KeAqotG6RVDi2jj42U3rR0A8LfJpXLhlg-JIIkXDzXRXjYcBse3oT4jmy2FtgSBen9BfCAzqmWQJiM7bVuO5n8-lmZUSN-BUoNGrB5uyYi6jG5ZeFXylyxc1471JtR42EBEEptxdjNF1g760mkdLSjSd61ACLi6ESGli3CXSonGHErBIYW68ZB5kPCAw4KeRPp7nKHXMUfjnTA1_i-FhmHIdzZORZBsb0ySq-rl0c3d8yM9wCc-LmYjpf4JkQ8e7MmTnvmDY2fQ3Ab-5jb6np970c48EJAOFuXiAS5ELsLxKqCqcUHvuUPlRQCBYIB41EeYena2nW4oCVoRDykEvRgoIGyOqhbqkxOVR84rf86SuHQwSeKsggebj4ptz3qPZEU0hD3iHKh1zpaxK6YJfIwZPIzhtLWB5YDEMcTEtoBisw0MUJdTc2R1iW25xVty6Hr3XiNHSAudCPbM1yjVH0MtrB6-mKHBuvqQk3rON_hCvaemUVK9l00eKmOvmp7dTNs5vsvnOnBQ6L6wSg8O5G4QWl4eZpeyOt3vXghcrUhHjQ9F0q6K_EzQmaW6hlLpC_6ZiPMnUpjPu-O4ECAL4t0mOpcfFBYRAFcnjSBmL5bIg5E-YIzdr36-8lxOdzK1Zohwny7xxq8dkymY-lalFyoU9HR2lV-gWhQhVWj1mOjGrSQSroHzi12RNZk4GcUFHNPubPi0WE5uQXVPZv43vo6mDiaCST0nlFFs6G2A4bEuTQquohgf4x91kUcQoJRyc5p-apm8-_wyFF1X9vO0K9OrNcj2OTT5fUKj-RjMn1crUmUg0ckig_BcAyTvviv0gZoCtYmnCtUezGQql8cspabkHXWtEJMZn4XNAA1N3c24QmNHkpq-PheGPoWW8Zs6Ig");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "CfDJ8KeAqotG6RVDi2jj42U3rR3L_7ZKv-q5umGmuGtgcLlQvX-x3vaAI9e8yo9O29uQSzvenkfYulYy-BuLGOPekfsKsNwPwAI3zkXklDQieTHxmjnlk8HlrnwreMHBr1-MqWLPtCKYLV_tku1tvIRUnO9vMVJEHwtwRcQ6nexmN3mvUmMyF3r36SIuGrpw1jk3wMdcfNoNXa04JnaBacv_PsFoRrjxWzXEEKV-mGvyVW4UijPbUXZSotR_gTRDdbpPEY8D80YzI2jtB69q4lj4aVA33ywt2rv2J2nDDpCI7cLpxRPInmC_pFvoUUyQADhh7N8i9ytrma9quBh__kt3Bdc2QTQNbtbIASs_wHBAFLl0pmFWb_FtaGndiwg_zKD8pbqQu8gEe8bGzNbgVb4_9DoB1X1wkOFkmDjgyyIPor_938qCRABhMVg_ZLNNQkWC-w3s42CVN-7EHfpo43QHZAjiDq8QHukE-MznPCmESA7XZqziW55_r3_2--xXBVEMzo4I6e5JlrlePKU4V4CiROlFSjHrQXBe2KsY82ZS_FOlP39oMzWQl7xEkSiQWKjJj4xxqsV7e1EhEhedHcvdewsDRR2P9Xm4TMAExnf7Gyv1AIgUDoAeCfAKQnpI94jQ9ZUUhN515BeB5fuxVJJAIIctdohRgMkOHR_JKFmAJGfjFDABOaN4FzQXCHENQjC5aiKrYxYogcMfKpQsBu-kICyvt1yC9oMPMuVRDkssX_Gm5rANZHL5SFSoIDj1xlaW_cf8sEUmajmZtJrl49CWjq5wKKj8eMj3LInnBv4ANvNuu8SliFdDXtqpqchhEkiMl77Ft-xYZ3p9ZXaRkp37cQ6IkkKtMDvP3cxYx_OvdIQffeqcv6us5Pp3kjuKfFTFBA");
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
-        public async Task<Query> GetAll(string requestBody)
+        public async Task<Query?> GetAll()
+        => await QueryAsync("POST", @"query MyQuery {
+          blogPost(orderBy: {createdUtc: DESC}) {
+            displayText
+            markdownBody {
+              html
+              markdown
+            }
+            author
+            contentItemId
+          }
+        }");
+
+        public async Task<Query?> GetSingle(string? id)
+        => await QueryAsync("POST", @"query MyQuery {
+            contentItem(contentItemId: ""4bzhr5qkx3wp17jv3k2ansf6dx"") {
+                contentItemId
+                contentType
+                author
+                displayText
+            }
+        }");
+
+        private async Task<Query?> QueryAsync(string method, string requestBody)
         {
-            var response = await _client.SendAsync(new HttpRequestMessage()
+            var requestMessage = new HttpRequestMessage()
             {
-                Method = new HttpMethod("POST"),
+                Method = new HttpMethod(method),
                 RequestUri = new Uri(uri),
-                Content = string.IsNullOrEmpty(requestBody) ? null : new StringContent(requestBody, Encoding.UTF8, "application/graphql")
-            });
+                Content = string.IsNullOrEmpty(requestBody) ? null : new StringContent(requestBody)
+            };
+            foreach (var header in requestHeaders)
+            {
+                // StringContent automatically adds its own Content-Type header with default value "text/plain"
+                // If the developer is trying to specify a content type explicitly, we need to replace the default value,
+                // rather than adding a second Content-Type header.
+                if (header.Name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase) && requestMessage.Content != null)
+                {
+                    requestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(header.Value);
+                    continue;
+                }
+
+                if (!requestMessage.Headers.TryAddWithoutValidation(header.Name, header.Value))
+                {
+                    requestMessage.Content?.Headers.TryAddWithoutValidation(header.Name, header.Value);
+                }
+            }
+            var response = await _client.SendAsync(requestMessage);
             //if (response.StatusCode == System.Net.HttpStatusCode.OK)            
-            var responseBody = await response.Content.ReadAsStringAsync();
+            var responseBody = await response.Content.ReadAsStringAsync(); ;
             var result = JsonSerializer.Deserialize<Query>(responseBody, _options);
             return result;
             //}
         }
-        public async Task<Query> GetSingle(string requestBody)
-        {
-            var response = await _client.SendAsync(new HttpRequestMessage()
-            {
-                Method = new HttpMethod("POST"),
-                RequestUri = new Uri(uri),
-                Content = string.IsNullOrEmpty(requestBody) ? null : new StringContent(requestBody, Encoding.UTF8, "application/graphql")
-            });
-            //if (response.StatusCode == System.Net.HttpStatusCode.OK)            
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Query>(responseBody, _options);
-            return result;
-            //}
-        }
+    }
+    public class RequestHeader
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

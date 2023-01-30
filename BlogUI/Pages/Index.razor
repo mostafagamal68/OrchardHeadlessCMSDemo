@@ -2,17 +2,18 @@
 @using BlogUI.Model;
 @using BlogUI.Services;
 @inject GraphQLService service
+@inject NavigationManager navigation
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 <div class="row">
-    @foreach (var item in result2?.data?.blogPost?.OrderBy(o=>o.createdUtc))
+    @foreach (var item in result2?.data?.blogPost)
     {
         <div class="col-4">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" @onclick="()=> GoToContentItem(item?.contentItemId)">
                     <h4>@item?.displayText</h4>
                 </div>
                 <div class="card-body">
@@ -26,28 +27,12 @@ Welcome to your new app.
     }
 </div>
 @code {
-    Query result1 = new();
-    Query result2 = new();
+    //Query? result1 = new();
+    Query? result2 = new();
     protected override async Task OnInitializedAsync()
     {
-        result1 = await service.GetSingle(@"query MyQuery {
-            contentItem(contentItemId: ""4bzhr5qkx3wp17jv3k2ansf6dx"") {
-                contentItemId
-                contentType
-                author
-                displayText
-            }
-        }");
-        result2 = await service.GetAll(@"query MyQuery {
-            blogPost {
-                displayText
-                markdownBody {
-                    html
-                    markdown
-                }
-                author
-                contentItemId
-            }
-        }");
+        //result1 = await service.GetSingle(null);
+        result2 = await service.GetAll();
     }
+    private void GoToContentItem(string? Id) => navigation.NavigateTo($"/ContentItem/{Id}");
 }

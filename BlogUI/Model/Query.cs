@@ -17,7 +17,7 @@
         public MarkDownBody? markdownBody { get; set; }
         public string? author { get; set; }
         public string? displayText { get; set; }
-        public DateTime? createdUtc { get; set; }
+        //public string? createdUtc { get; set; }
     }
 
     public class MarkDownBody
