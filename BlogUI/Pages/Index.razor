@@ -1,38 +1,29 @@
 ﻿@page "/"
-@using BlogUI.Model;
-@using BlogUI.Services;
-@inject GraphQLService service
+@inject IGraphQLService service
 @inject NavigationManager navigation
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<h1>Blog Posts</h1>
 <div class="row">
-    @foreach (var item in result2?.data?.blogPost)
+    @foreach (var item in service.BlogPosts)
     {
         <div class="col-4">
             <div class="card">
-                <div class="card-header" @onclick="()=> GoToContentItem(item?.contentItemId)">
-                    <h4>@item?.displayText</h4>
+                <div class="card-header" @onclick="()=> GoToContentItem(item.contentItemId)">
+                    <h4>@item.displayText</h4>
                 </div>
                 <div class="card-body">
-                    <p>@item?.markdownBody?.markdown</p>
+                    <p>@item.markdownBody?.markdown</p>
                 </div>
                 <div class="card-footer">
-                    <p>@item?.author</p>
+                    <p>@item.author</p>
                 </div>
             </div>
         </div>
     }
 </div>
 @code {
-    //Query? result1 = new();
-    Query? result2 = new();
-    protected override async Task OnInitializedAsync()
-    {
-        //result1 = await service.GetSingle(null);
-        result2 = await service.GetAll();
-    }
+    protected override async Task OnInitializedAsync() => await service.GetAll();
+
     private void GoToContentItem(string? Id) => navigation.NavigateTo($"/ContentItem/{Id}");
 }

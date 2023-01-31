@@ -3,83 +3,80 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using BlogUI.Model;
-using static System.Net.WebRequestMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlogUI.Services
 {
-    public class GraphQLService
+    public class GraphQLService : IGraphQLService
     {
         private readonly HttpClient _client;
         private readonly JsonSerializerOptions _options;
         private readonly string uri = "https://localhost:7022/api/graphql";
-        private List<RequestHeader> requestHeaders = new List<RequestHeader>()
-        {
-            new RequestHeader() { Name = "Content-Type", Value = "application/graphql" },
-        };
         public GraphQLService(HttpClient client)
         {
             _client = client;
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "CfDJ8KeAqotG6RVDi2jj42U3rR3L_7ZKv-q5umGmuGtgcLlQvX-x3vaAI9e8yo9O29uQSzvenkfYulYy-BuLGOPekfsKsNwPwAI3zkXklDQieTHxmjnlk8HlrnwreMHBr1-MqWLPtCKYLV_tku1tvIRUnO9vMVJEHwtwRcQ6nexmN3mvUmMyF3r36SIuGrpw1jk3wMdcfNoNXa04JnaBacv_PsFoRrjxWzXEEKV-mGvyVW4UijPbUXZSotR_gTRDdbpPEY8D80YzI2jtB69q4lj4aVA33ywt2rv2J2nDDpCI7cLpxRPInmC_pFvoUUyQADhh7N8i9ytrma9quBh__kt3Bdc2QTQNbtbIASs_wHBAFLl0pmFWb_FtaGndiwg_zKD8pbqQu8gEe8bGzNbgVb4_9DoB1X1wkOFkmDjgyyIPor_938qCRABhMVg_ZLNNQkWC-w3s42CVN-7EHfpo43QHZAjiDq8QHukE-MznPCmESA7XZqziW55_r3_2--xXBVEMzo4I6e5JlrlePKU4V4CiROlFSjHrQXBe2KsY82ZS_FOlP39oMzWQl7xEkSiQWKjJj4xxqsV7e1EhEhedHcvdewsDRR2P9Xm4TMAExnf7Gyv1AIgUDoAeCfAKQnpI94jQ9ZUUhN515BeB5fuxVJJAIIctdohRgMkOHR_JKFmAJGfjFDABOaN4FzQXCHENQjC5aiKrYxYogcMfKpQsBu-kICyvt1yC9oMPMuVRDkssX_Gm5rANZHL5SFSoIDj1xlaW_cf8sEUmajmZtJrl49CWjq5wKKj8eMj3LInnBv4ANvNuu8SliFdDXtqpqchhEkiMl77Ft-xYZ3p9ZXaRkp37cQ6IkkKtMDvP3cxYx_OvdIQffeqcv6us5Pp3kjuKfFTFBA");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                "CfDJ8KeAqotG6RVDi2jj42U3rR2r_reGmy5CegwkVwzydYd3z3RMcs6UMMv9bbw1NhO6kUCvtSXddpupDmnn_ij8WtiQ-AumgcU1QUisbXUU3BS5deXRNSXkj8Zs08_Zq0CLvusx_-2WjH3nfk15_MaU86Hxx-kzU8bpU16oVSaGAua7LhcNcvt_hE0onVtExij1rwAjsPZr3nH-_nRsckiACEfRbW9q7yg9A4Jf68YgQUqKh_3ETy79Dk4AyI14e8rMn5z6pn6bU6qrMsfEJSYJTEnzXwZsDLstn6SmJN8sgqmwVhW2nH_s8k0ySNzgN-pWvpddGK6J9w4YloqBeGPZl1WS0vtWfr3eR2P627UxDFEjn4vKa5U1h6h8TnNCV9tRjsy5zeX5grBTFp5msOvoCXtq67h_ZpSDC5vPLscbW8hPHnhinzwt6XWxDS1PEX4WiIN5SG5qdqRiIYwVbIpAy_kixm9jqILSZOEjzI7L4cdeQW03BxvkdriMHKJZs4WVBPOpmnvirlTXym1d5BAyLHcr2TTyHoMCejZ4Nnp0xWeCGNqC6qu0qgT31NKXMUb-KLow9jc4gSWod-7NlZuYlHuDpmANLcWQLsd-AIaVigWQAaFmrW7aBaZsWF2D6gNLZvpHx5w7CTmo4CVkzL35ttY7dBzpJuoVYvuWBDyHM4li8ezlvWzOvWl-LInQMkbmWfVOvN1IHwSKSu9WMyw5mRHYG8acQiCt2kBZtkYHYZv5LMgaholI1Dj4UiN-fVipbaE8R6ZSA6w2pmU05G2XtNk5-jgPykOKuZXyxxcwP4t3RzolpyzvZWy1mI4HInRtHPfSEnaVGhbVYvDatbDqBMylvl64dcYO4PO6Mi2-8Ch-mKDjbjYDweGJDgEgz7itVQ"
+            );
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
-        public async Task<Query?> GetAll()
-        => await QueryAsync("POST", @"query MyQuery {
-          blogPost(orderBy: {createdUtc: DESC}) {
-            displayText
-            markdownBody {
-              html
-              markdown
-            }
-            author
-            contentItemId
-          }
-        }");
 
-        public async Task<Query?> GetSingle(string? id)
-        => await QueryAsync("POST", @"query MyQuery {
-            contentItem(contentItemId: ""4bzhr5qkx3wp17jv3k2ansf6dx"") {
+        public List<BlogPost> BlogPosts { get; set; } = new();
+        public ContentItem BlogPost { get; set; } = new();
+        public async Task GetAll()
+        {
+            var result = await QueryAsync("POST", @"
+            query MyQuery {
+              blogPost(orderBy: {createdUtc: DESC}) {
+                displayText
+                markdownBody {
+                  html
+                  markdown
+                }
+                author
                 contentItemId
                 contentType
-                author
-                displayText
-            }
-        }");
-
-        private async Task<Query?> QueryAsync(string method, string requestBody)
-        {
-            var requestMessage = new HttpRequestMessage()
-            {
-                Method = new HttpMethod(method),
-                RequestUri = new Uri(uri),
-                Content = string.IsNullOrEmpty(requestBody) ? null : new StringContent(requestBody)
-            };
-            foreach (var header in requestHeaders)
-            {
-                // StringContent automatically adds its own Content-Type header with default value "text/plain"
-                // If the developer is trying to specify a content type explicitly, we need to replace the default value,
-                // rather than adding a second Content-Type header.
-                if (header.Name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase) && requestMessage.Content != null)
-                {
-                    requestMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(header.Value);
-                    continue;
-                }
-
-                if (!requestMessage.Headers.TryAddWithoutValidation(header.Name, header.Value))
-                {
-                    requestMessage.Content?.Headers.TryAddWithoutValidation(header.Name, header.Value);
-                }
-            }
-            var response = await _client.SendAsync(requestMessage);
-            //if (response.StatusCode == System.Net.HttpStatusCode.OK)            
-            var responseBody = await response.Content.ReadAsStringAsync(); ;
-            var result = JsonSerializer.Deserialize<Query>(responseBody, _options);
-            return result;
-            //}
+              }
+            }");
+            if (result != null)
+                BlogPosts = result.data.blogPost;
         }
-    }
-    public class RequestHeader
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
+
+        public async Task GetSingle(string? id)
+        {
+            var result = await QueryAsync("POST", $$"""
+                query MyQuery {
+                  contentItem(contentItemId: "{{id}}") {
+                    ... on BlogPost {
+                      displayText
+                      markdownBody {
+                        html
+                        markdown
+                      }
+                      contentType
+                      author
+                    }
+                  }
+                }
+                """);
+            if (result != null)
+                BlogPost = result.data.contentItem;
+            //else return null;
+
+        }
+
+        public async Task<Query?> QueryAsync(string method, string requestBody)
+        {
+            var content = new StringContent(requestBody, Encoding.UTF8, "application/graphql");
+            var response = await _client.PostAsync(uri, content);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync(); ;
+                return JsonSerializer.Deserialize<Query>(responseBody, _options);
+            }
+            else
+                return null;
+        }
     }
 }

@@ -1,0 +1,23 @@
+﻿@page "/ContentItem/{Id}"
+@inject IGraphQLService service
+<PageTitle>@service.BlogPost.contentType : @service.BlogPost.displayText</PageTitle>
+<h3>@service.BlogPost.contentType</h3>
+
+<div class="card">
+    <div class="card-header">
+        <h4>@service.BlogPost.displayText</h4>
+    </div>
+    <div class="card-body">
+        <p>@service.BlogPost.markdownBody.markdown</p>
+    </div>
+    <div class="card-footer">
+        <p>@service.BlogPost.author</p>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    protected override async Task OnInitializedAsync() => await service.GetSingle(Id);
+
+}
