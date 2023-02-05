@@ -15,10 +15,6 @@ namespace BlogUI.Services
         public GraphQLService(HttpClient client)
         {
             _client = client;
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                "Bearer",
-                "CfDJ8KeAqotG6RVDi2jj42U3rR3S41kiT9i8Fmv-VMRY1apQ_UPqokMQm0C3T1a6BA0VUbLWa0dpxLq9V8GLx8ssz9YP-0k_KX3hxVkyM58pRpiEK8nRRCrR9xNVUH0BLDZDTKV1ar9Or6BGmRp0X7miDOOshR7jl_X9cEfyx1luqKrzOF8t-slkJm7x7UScoFgewhuIOkdHUu92dDoHYi-PwZzB4HO-qP3kYQJ_K0Z6Eje0XJK15QtyAoBNoqNQkJ0sgGR6dKpcnTXBb0tyEBQOLhPlV6KURYa7cbK3bmTAogAK_18O77D1wrLTAIIWBM1N2KhOl8cYM7zIAmNMhj0Gbys34quQxfzo2s6VanhWDlFxsJqLWjqphVc61z7hkGWAS3RINKrR0Gf2mX0ltIqMd5fcGUot3sCG8Hu0Exs_IgEt3RxZxLP4wEiJBdkMj7oc3utbDM0iiMSEaDncqLid2p6gN4EFc6Mx-YAVnHoHwj1WvuPM_Zi4-AMqVjR22FxHYFGftSsTaUFXRzHEzCfuMjeQF7K4wfJvAz5oY6LwAFOvp0y6W6UqMAXIUA20b4v9TDyWmQgO0Os74znUNZNxIdd2J64YxuHf5wbAkIHlSG1ad-o_fhvZkuR0ctkdhKSGc4ulw3beb-9ohWOuR2HtmigYoTezNvwRnZJXHNrDgU2-61ZSabKwAOotrlrwLo_oBf5K4kxSuwtP_mOVRvDu6rDFTPkwXZWxu69tXK0Es6_OQd7DfTRDb_jfQegmogrOLVyYxHwYuQshfB9PgG9qO1GaLc7rZdFQnvIGL2ITY9ng-BlNTOaw6iDEqvXtJNhYZEqukURVCTZ6-3HLeMkC5wc-nANiZ1J2HoRz2ZOXvgwqfOCQIv0ijDUVy1qTQlxBbg"
-            );
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
@@ -26,7 +22,7 @@ namespace BlogUI.Services
         public ContentItem BlogPost { get; set; } = new();
         public async Task GetAll()
         {
-            var result = await QueryAsync("POST", @"
+            var result = await QueryAsync(@"
                 query MyQuery {
                   blogPost(orderBy: {createdUtc: DESC}) {
                     displayText
@@ -45,7 +41,7 @@ namespace BlogUI.Services
 
         public async Task GetSingle(string? id)
         {
-            var result = await QueryAsync("POST", $$"""
+            var result = await QueryAsync($$"""
                 query MyQuery {
                   contentItem(contentItemId: "{{id}}") {
                     ... on BlogPost {
@@ -64,7 +60,7 @@ namespace BlogUI.Services
                 BlogPost = result.data.contentItem;
         }
 
-        public async Task<Authorize?> GetAuthorizeAsync()
+        private async Task<Query?> QueryAsync(string requestBody)
         {
             var data = new List<KeyValuePair<string, string>>
             {
@@ -73,26 +69,15 @@ namespace BlogUI.Services
                 new KeyValuePair<string, string>("grant_type", "client_credentials")
             };
 
-            var responseAuth = await _client.PostAsync(tokenUri, new FormUrlEncodedContent(data));
-            if (responseAuth.StatusCode == HttpStatusCode.OK)
-            {
-                var responseBody = await responseAuth.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<Authorize>(responseBody, _options);
-            }
-            else 
-                return null;
-        }
-        public async Task<Query?> QueryAsync(string method, string requestBody)
-        {
+            HttpResponseMessage? responseAuth = await _client.PostAsync(tokenUri, new FormUrlEncodedContent(data));
+            string? responseAuthBody = await responseAuth.Content.ReadAsStringAsync();
+            Authorize? auth = JsonSerializer.Deserialize<Authorize>(responseAuthBody, _options);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(auth.token_type, auth.access_token);
+
             var content = new StringContent(requestBody, Encoding.UTF8, "application/graphql");
-            var response = await _client.PostAsync(uri, content);
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var responseBody = await response.Content.ReadAsStringAsync(); ;
-                return JsonSerializer.Deserialize<Query>(responseBody, _options);
-            }
-            else
-                return null;
+            HttpResponseMessage? response = await _client.PostAsync(uri, content);
+            string? responseBody = await response.Content.ReadAsStringAsync(); ;
+            return JsonSerializer.Deserialize<Query>(responseBody, _options);
         }
     }
 }
