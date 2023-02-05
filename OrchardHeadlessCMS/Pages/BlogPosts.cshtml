@@ -1,0 +1,18 @@
+﻿@page "/BlogPosts"
+@inject OrchardCore.IOrchardHelper Orchard
+@{
+    var blogPost = await Orchard.GetContentItemByAliasAsync("Home");
+}
+
+@*<div class="card">
+    <div class="card-header">
+        <h4>@blogPost.DisplayText</h4>
+    </div>
+    <div class="card-body">
+        <p>@blogPost.Content.MarkdownBodyPart.Markdown</p>
+    </div>
+    <div class="card-footer">
+        <p>@blogPost.Author</p>
+    </div>
+</div>*@
+@Orchard.ConsoleLog(blogPost)
