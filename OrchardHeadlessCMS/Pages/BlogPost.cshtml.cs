@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace OrchardHeadlessCMS.Pages
 {
-    public class BlogPostsModel : PageModel
+    public class BlogPostModel : PageModel
     {
         public void OnGet()
         {

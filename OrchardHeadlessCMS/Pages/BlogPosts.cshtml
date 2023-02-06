@@ -1,18 +1,50 @@
 ﻿@page "/BlogPosts"
-@inject OrchardCore.IOrchardHelper Orchard
-@{
-    var blogPost = await Orchard.GetContentItemByAliasAsync("Home");
-}
+@model OrchardHeadlessCMS.Pages.BlogPostsModel
 
-@*<div class="card">
-    <div class="card-header">
-        <h4>@blogPost.DisplayText</h4>
+<h3>@Model?.Data?.TitlePart.Title</h3>
+<h4>@Model?.Data?.MarkdownBodyPart.Markdown</h4>
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Customers</h5>
+            </div>
+            <div class="card-body">
+                <h6>@Model?.Data?.Home.Customers.ToString()</h6>
+            </div>
+            @*<div class="card-footer">
+                <p>@item.Author</p>
+            </div>*@
+        </div>
     </div>
-    <div class="card-body">
-        <p>@blogPost.Content.MarkdownBodyPart.Markdown</p>
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Users</h5>
+            </div>
+            <div class="card-body">
+                <h6>@Model?.Data?.Home.Users.ToString()</h6>
+            </div>
+        </div>
     </div>
-    <div class="card-footer">
-        <p>@blogPost.Author</p>
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Modules</h5>
+            </div>
+            <div class="card-body">
+                <h6>@Model?.Data?.Home.Modules.ToString()</h6>
+            </div>
+        </div>
     </div>
-</div>*@
-@Orchard.ConsoleLog(blogPost)
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Features</h5>
+            </div>
+            <div class="card-body">
+                <h6>@Model?.Data?.Home.Features.ToString()</h6>
+            </div>
+        </div>
+    </div>
+</div>
