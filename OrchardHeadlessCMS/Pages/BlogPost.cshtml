@@ -1,22 +1,22 @@
 ﻿@page "/BlogPost/{id}"
-@inject OrchardCore.IOrchardHelper Orchard
+@model BlogPostModel
 @{
-    var blogPost = await Orchard.GetContentItemByIdAsync(Id);
+    ViewData["Title"] = Model?.ContentItem?.DisplayText;
 }
-
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">BlogPost</li>
+  </ol>
+</nav>
 <div class="card">
     <div class="card-header">
-        <h4>@blogPost.DisplayText</h4>
+        <h4>@Model?.ContentItem?.DisplayText</h4>
     </div>
     <div class="card-body">
-        <p>@blogPost.Content.MarkdownBodyPart.Markdown</p>
+        <p>@Model?.ContentItem?.Content?.MarkdownBodyPart?.Markdown</p>
     </div>
     <div class="card-footer">
-        <p>@blogPost.Author</p>
+        <p>@Model?.ContentItem?.Author</p>
     </div>
 </div>
-
-@functions{
-    [FromRoute]
-    public string? Id { get; set; }
-}

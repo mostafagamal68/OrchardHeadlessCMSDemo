@@ -3,8 +3,75 @@
 @{
     ViewData["Title"] = "Home page";
 }
-
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <img class="col-2" src="/media/@Model?.Data?.Home?.Image?.Paths?[0].ToString()" />
 </div>
+<div class="row">
+
+    <div class="col m-auto">
+        <h3>@Model?.Data?.TitlePart?.Title</h3>
+        <p>@Model?.Data?.MarkdownBodyPart?.Markdown</p>
+    </div>
+</div>
+<div class="row my-3">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header text-center">
+                <h5>Customers</h5>
+            </div>
+            <div class="card-body text-center">
+                <h4>+@Model?.Data?.Home?.Customers?.Value?.ToString()</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header text-center">
+                <h5>Users</h5>
+            </div>
+            <div class="card-body text-center">
+                <h4>+@Model?.Data?.Home?.Users?.Value?.ToString()</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header text-center">
+                <h5>Modules</h5>
+            </div>
+            <div class="card-body text-center">
+                <h4>@Model?.Data?.Home?.Modules?.Value?.ToString()</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header text-center">
+                <h5>Features</h5>
+            </div>
+            <div class="card-body text-center">
+                <h4>+@Model?.Data?.Home?.Features?.Value?.ToString()</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row my-3">
+    @foreach (var item in Model?.Products)
+    {
+        <div class="container">
+            <div class="row m-3">
+                <div class="col-6 text-center my-auto">
+                    <img src="/media/@item?.Content?.Products?.Image?.Paths?[0].ToString()" />
+                </div>
+                <div class="col m-auto">
+                    <h2>@item?.Content?.TitlePart?.Title</h2>
+                    <h4>@item?.Content?.Products?.Type?.Value?.ToString()</h4>
+                    <p>@item?.Content?.MarkdownBodyPart?.Markdown</p>
+                    <a class="btn btn-outline-primary" role="button" href="/Product/@item?.ContentItemId">Read More</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

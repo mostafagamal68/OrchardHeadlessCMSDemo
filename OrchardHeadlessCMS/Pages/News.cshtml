@@ -1,0 +1,37 @@
+﻿@page "/News"
+@model OrchardHeadlessCMS.Pages.NewsModel
+@{
+    ViewData["Title"] = "News And Events";
+}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">News & Events</li>
+  </ol>
+</nav>
+@if (Model.Data != null)
+{
+    foreach (var item in Model.Data)
+    {
+        <div class="card shadow my-3" style="border-radius:25px">
+            <div class="row m-3">
+                <div class="col-2 text-center my-auto">
+                    <img src="/media/@item?.Content?.NewsAndEvents?.Image?.Paths?[0].ToString()" height="100" width="150" />
+                </div>
+                <div class="col">
+                    <h5>@(Convert.ToDateTime(item?.Content?.NewsAndEvents?.Date?.Value?.ToString()))</h5>
+                    <h4>@item?.Content?.TitlePart?.Title</h4>
+                    <p>@item?.Content?.MarkdownBodyPart?.Markdown?.Substring(0,200) ...</p>
+                    <a class="btn btn-outline-primary" role="button" href="/News/@item?.ContentItemId">Read More</a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <h6>@item?.Author</h6>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <h3>No news or events</h3>
+}
