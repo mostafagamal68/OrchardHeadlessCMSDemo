@@ -29,7 +29,7 @@ namespace OrchardHeadlessCMS.Handler
 
         public async Task<List<ItemContent>?> GetListByTypeAsync(string? type)
         {            
-            var query = await _orchardHelper.QueryContentItemsAsync(q=>q.Where(c=>c.ContentType == type));
+            var query = await _orchardHelper.QueryContentItemsAsync(q=>q.Where(c=>c.ContentType == type && c.Published == true));
             var roundedCount = Math.Round(query.Count()/10M,MidpointRounding.ToPositiveInfinity);
             var result = query.ToList();
             if (result != null)

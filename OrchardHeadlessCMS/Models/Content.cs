@@ -19,6 +19,7 @@
         public CustomFields? NewsAndEvents { get; set; }
         public MarkdownBodyPart? MarkdownBodyPart { get; set; }
         public TitlePart? TitlePart { get; set; }
+        public LiquidPart? LiquidPart { get; set; }
     }
     public class CustomFields
     {
@@ -49,5 +50,9 @@
     public class TitlePart
     {
         public string? Title { get; set; }
+    }
+    public class LiquidPart
+    {
+        public string? Liquid { get; set; }
     }
 }
