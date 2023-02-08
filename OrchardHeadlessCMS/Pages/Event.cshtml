@@ -1,0 +1,27 @@
+﻿@page "/News/{id}"
+@model EventModel
+@{
+    ViewData["Title"] = Model?.ContentItem?.DisplayText;
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/News">@Model?.ContentItem?.ContentType</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model?.ContentItem?.DisplayText</li>
+    </ol>
+</nav>
+<div class="card shadow" style="border-radius:25px">
+    <div class="card-header">
+        <h5>@(Convert.ToDateTime(Model?.ContentItem?.Content?.NewsAndEvents?.Date?.Value?.ToString()))</h5>
+        <h2>@Model?.ContentItem?.DisplayText</h2>
+        <div class="text-center">
+            <img class="w-75 h-50" src="/media/@Model?.ContentItem?.Content?.NewsAndEvents?.Image?.Paths?[0].ToString()" />
+        </div>
+    </div>
+    <div class="card-body">
+        <p>@Model?.ContentItem?.Content?.MarkdownBodyPart?.Markdown</p>
+    </div>
+    <div class="card-footer" style="border-radius:0 0 25px 25px">
+        <p>@Model?.ContentItem?.Author</p>
+    </div>
+</div>

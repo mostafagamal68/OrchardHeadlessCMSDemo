@@ -1,7 +1,10 @@
+using OrchardHeadlessCMS.Handler;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOrchardCms();
+builder.Services.AddScoped<ContentItemHandler>();
 builder.Services.AddCors(policy =>
 {
     policy.AddPolicy("CorsPolicy", opt => opt

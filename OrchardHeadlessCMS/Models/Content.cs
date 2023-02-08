@@ -1,12 +1,12 @@
 ﻿namespace OrchardHeadlessCMS.Models
 {
-    public class ContentItem
+    public class ItemContent
     {
         public string? Author { get; set; }
         public string? DisplayText { get; set; }
         public string? Owner { get; set; }
         public string? ContentItemId { get; set; }
-        public string? ContentTypeId { get; set; }
+        public string? ContentType { get; set; }
         public DateTime? CreatedUtc { get; set; }
         public DateTime? ModifiedUtc { get; set; }
         public DateTime? PublishedUtc { get; set; }
@@ -27,8 +27,12 @@
         public ValueObject? Modules { get; set; }
         public ValueObject? Features { get; set; }
         public ValueObject? Date { get; set; }
-        public ValueObject? Type { get; set; }
+        public TextObject? Type { get; set; }
         public Image? Image { get; set; }
+    }
+    public class TextObject
+    {
+        public string? Text { get; set; }
     }
     public class ValueObject
     {
