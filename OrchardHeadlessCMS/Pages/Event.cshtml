@@ -12,17 +12,59 @@
 </nav>
 <div class="card shadow" style="border-radius:25px">
     <div class="card-header">
-        <h5>@(Convert.ToDateTime(Model?.ContentItem?.Content?.NewsAndEvents?.Date?.Value?.ToString()))</h5>
+        <h5 class="d-inline">@(Convert.ToDateTime(Model?.ContentItem?.Content?.NewsAndEvents?.Date?.Value?.ToString()))</h5>
+        <p class="d-inline m-auto">@Model?.ContentItem?.Author</p>
         <h2>@Model?.ContentItem?.DisplayText</h2>
         <div class="text-center">
             <img class="w-75 h-50" src="/media/@Model?.ContentItem?.Content?.NewsAndEvents?.Image?.Paths?[0].ToString()" />
         </div>
     </div>
     <div class="card-body">
-        <p>@Model?.ContentItem?.Content?.MarkdownBodyPart?.Markdown</p>
+        <p style="text-align:justify;">@Model?.ContentItem?.Content?.MarkdownBodyPart?.Markdown</p>
     </div>
     <div class="card-footer" style="border-radius:0 0 25px 25px">
-        <p>@Model?.ContentItem?.Author</p>
+        @if (Model?.Comments?.Count != 0)
+        {
+            <div class="row">
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-2">
+                        <div class="card" style="border-radius:25px">
+                            <div class="card-body">
+                                <h6>@comment.CreatedUtc</h6>
+                                <strong>@comment.Author</strong>
+                                <p>@comment.DisplayText</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        <div class="container">
+            <form method="post">
+                <div class="col-12 col-lg-6 m-2">
+                    <div class="row">
+                        <label for="author" class="col-3 form-label my-auto">Name</label>
+                        <input type="text" class="col form-control me-lg-0 me-3" id="author" name="author" />
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 m-2">
+                    <div class="row">
+                        <label for="comment" class="col-3 form-label my-auto">Summary</label>
+                        <input type="text" class="col form-control me-lg-0 me-3" id="summary" name="summary" />
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 m-2">
+                    <div class="row">
+                        <label for="summary" class="col-3 form-label my-auto">Comment</label>
+                        <textarea type="text" class="col form-control me-lg-0 me-3" id="comment" name="comment"></textarea>
+                    </div>
+                </div>
+                <div class="m-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-@Model?.ContentItem?.Content?.LiquidPart?.Liquid?.ToString()
+@*@Model?.ContentItem?.Content?.LiquidPart?.Liquid?.ToString()*@

@@ -1,5 +1,7 @@
 ﻿using OrchardCore;
+using OrchardCore.ContentManagement;
 using OrchardHeadlessCMS.Models;
+using System.Text;
 using System.Text.Json;
 
 namespace OrchardHeadlessCMS.Handler
@@ -8,13 +10,32 @@ namespace OrchardHeadlessCMS.Handler
     {
         private readonly IOrchardHelper _orchardHelper;
         private readonly JsonSerializerOptions _options;
-
+        private IContentManager? ContentManager;
+        private IContentItemIdGenerator? ContentItemIdGenerator;
         public ContentItemHandler(IOrchardHelper orchardHelper)
         {
             _orchardHelper = orchardHelper;
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            ContentManager = _orchardHelper.HttpContext.RequestServices.GetService<IContentManager>();
+            ContentItemIdGenerator = _orchardHelper.HttpContext.RequestServices.GetService<IContentItemIdGenerator>();
         }
-        
+
+        public async Task CreateContentItem(string? type, string? text, string? author)
+        {
+            var contentItem = new ContentItem
+            {
+                ContentType = type,
+                DisplayText = text,
+                Author = author,
+                Owner = "",
+                PublishedUtc = DateTime.UtcNow,
+                CreatedUtc = DateTime.UtcNow,
+                ModifiedUtc = DateTime.UtcNow,
+            };
+            contentItem.ContentItemId = ContentItemIdGenerator?.GenerateUniqueId(contentItem);
+            await ContentManager.CreateAsync(contentItem);
+        }
+
         public async Task<ItemContent> GetSingleAsync(string? Id)
         {
             var contentItem = await _orchardHelper.GetContentItemByIdAsync(Id);
@@ -28,9 +49,9 @@ namespace OrchardHeadlessCMS.Handler
         }
 
         public async Task<List<ItemContent>?> GetListByTypeAsync(string? type)
-        {            
-            var query = await _orchardHelper.QueryContentItemsAsync(q=>q.Where(c=>c.ContentType == type && c.Published == true));
-            var roundedCount = Math.Round(query.Count()/10M,MidpointRounding.ToPositiveInfinity);
+        {
+            var query = await _orchardHelper.QueryContentItemsAsync(q => q.Where(c => c.ContentType == type && c.Published == true));
+            var roundedCount = Math.Round(query.Count() / 10M, MidpointRounding.ToPositiveInfinity);
             var result = query.ToList();
             if (result != null)
             {
@@ -40,6 +61,7 @@ namespace OrchardHeadlessCMS.Handler
                     ContentItems.Add(new ItemContent
                     {
                         Author = contentItem.Author,
+                        DisplayText = contentItem.DisplayText,
                         ContentItemId = contentItem.ContentItemId,
                         ContentType = Helper.StringExtensions.AddSpacesToSentence(contentItem.ContentType, true),
                         Owner = contentItem.Owner,
