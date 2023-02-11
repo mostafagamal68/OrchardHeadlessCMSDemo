@@ -1,17 +1,17 @@
 ﻿@page "/News"
 @model OrchardHeadlessCMS.Pages.NewsModel
 @{
-    ViewData["Title"] = Model?.Data?.FirstOrDefault()?.ContentType;
+    ViewData["Title"] = Model?.ContentTypeDefinition?.DisplayName;
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model?.Data?.FirstOrDefault()?.ContentType</li>
+        <li class="breadcrumb-item active" aria-current="page">@Model?.ContentTypeDefinition?.DisplayName</li>
     </ol>
 </nav>
 @if (Model?.Data != null)
 {
-    <h2>@Model?.Data?.FirstOrDefault()?.ContentType</h2>
+    <h2>@Model?.ContentTypeDefinition?.DisplayName</h2>
     foreach (var item in Model.Data)
     {
         <div class="card shadow my-3" style="border-radius:25px">
@@ -36,3 +36,16 @@ else
 {
     <h3>No news or events</h3>
 }
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-end">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>

@@ -1,12 +1,12 @@
 ﻿@page "/News/{id}"
 @model EventModel
 @{
-    ViewData["Title"] = Model?.ContentItem?.DisplayText;
+    ViewData["Title"] = Model?.ContentTypeDefinition?.DisplayName;
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a href="/News">@Model?.ContentItem?.ContentType</a></li>
+        <li class="breadcrumb-item"><a href="/News">@Model?.ContentTypeDefinition?.DisplayName</a></li>
         <li class="breadcrumb-item active" aria-current="page">@Model?.ContentItem?.DisplayText</li>
     </ol>
 </nav>
@@ -23,6 +23,7 @@
         <p style="text-align:justify;">@Model?.ContentItem?.Content?.MarkdownBodyPart?.Markdown</p>
     </div>
     <div class="card-footer" style="border-radius:0 0 25px 25px">
+        <h3>Comments</h3>
         @if (Model?.Comments?.Count != 0)
         {
             <div class="row">
@@ -31,9 +32,10 @@
                     <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-2">
                         <div class="card" style="border-radius:25px">
                             <div class="card-body">
-                                <h6>@comment.CreatedUtc</h6>
+                                <h5>@comment.CreatedUtc</h5>
                                 <strong>@comment.Author</strong>
-                                <p>@comment.DisplayText</p>
+                                <h6>@comment.Content?.TitlePart?.Title?.ToString()</h6>
+                                <p>@comment.Content?.MarkdownBodyPart?.Markdown?.ToString()</p>
                             </div>
                         </div>
                     </div>

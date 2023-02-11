@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardHeadlessCMS.Handler;
 using OrchardHeadlessCMS.Models;
 
@@ -14,9 +15,11 @@ namespace OrchardHeadlessCMS.Pages
         }
 
         public List<ItemContent>? Data { get; set; } = new();
+        public ContentTypeDefinition ContentTypeDefinition { get; set; }
 
         public async Task OnGetAsync()
         {
+            ContentTypeDefinition = await _handler.GetTypeAsync("NewsAndEvents");
             Data = await _handler.GetListByTypeAsync("NewsAndEvents");
         }        
     }    

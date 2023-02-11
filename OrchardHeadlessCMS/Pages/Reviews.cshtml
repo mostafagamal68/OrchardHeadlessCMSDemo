@@ -1,0 +1,78 @@
+﻿@page "/Reviews"
+@model ReviewsModel
+@{
+    ViewData["Title"] = Model?.ContentTypeDefinition?.DisplayName;
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model?.ContentTypeDefinition?.DisplayName</li>
+    </ol>
+</nav>
+<div class="card shadow mb-3" style="border-radius:25px">
+    <div class="card-header">
+        <h3>@Model?.ContentTypeDefinition?.DisplayName</h3>
+    </div>
+    <div class="card-body">
+        @if (Model?.Reviews?.Count != 0)
+        {
+            <div class="row">
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-2">
+                        <div class="card" style="border-radius:25px">
+                            <div class="card-body">
+                                <h5>@review.CreatedUtc</h5>
+                                <strong>@review.Author</strong>
+                                <h6>@review.Content?.TitlePart?.Title?.ToString()</h6>
+                                <p>@review.Content?.MarkdownBodyPart?.Markdown?.ToString()</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <h4>No Reviews</h4>
+        }
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="card-footer" style="border-radius:0 0 25px 25px">
+        <form method="post">
+            <div class="col-12 col-lg-6 m-2">
+                <div class="row">
+                    <label for="author" class="col-3 form-label my-auto">Name</label>
+                    <input type="text" class="col form-control me-lg-0 me-3" id="author" name="author" />
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 m-2">
+                <div class="row">
+                    <label for="comment" class="col-3 form-label my-auto">Summary</label>
+                    <input type="text" class="col form-control me-lg-0 me-3" id="summary" name="summary" />
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 m-2">
+                <div class="row">
+                    <label for="summary" class="col-3 form-label my-auto">Comment</label>
+                    <textarea type="text" class="col form-control me-lg-0 me-3" id="comment" name="comment"></textarea>
+                </div>
+            </div>
+            <div class="m-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

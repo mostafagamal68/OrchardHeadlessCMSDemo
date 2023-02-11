@@ -1,5 +1,10 @@
-﻿using OrchardCore;
+﻿using Markdig;
+using OrchardCore;
 using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Models;
+using OrchardCore.Markdown.Models;
+using OrchardCore.Title.Models;
 using OrchardHeadlessCMS.Models;
 using System.Text;
 using System.Text.Json;
@@ -8,32 +13,33 @@ namespace OrchardHeadlessCMS.Handler
 {
     public class ContentItemHandler
     {
-        private readonly IOrchardHelper _orchardHelper;
         private readonly JsonSerializerOptions _options;
-        private IContentManager? ContentManager;
-        private IContentItemIdGenerator? ContentItemIdGenerator;
+        private readonly IOrchardHelper _orchardHelper;
+        private readonly IContentManager? _contentManager;
+        private readonly IContentItemIdGenerator? _contentItemIdGenerator;
+        private readonly IContentDefinitionManager? _contentDefinitionManager;
         public ContentItemHandler(IOrchardHelper orchardHelper)
         {
             _orchardHelper = orchardHelper;
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            ContentManager = _orchardHelper.HttpContext.RequestServices.GetService<IContentManager>();
-            ContentItemIdGenerator = _orchardHelper.HttpContext.RequestServices.GetService<IContentItemIdGenerator>();
+            _contentManager = _orchardHelper.HttpContext.RequestServices.GetService<IContentManager>();
+            _contentItemIdGenerator = _orchardHelper.HttpContext.RequestServices.GetService<IContentItemIdGenerator>();
+            _contentDefinitionManager = _orchardHelper.HttpContext.RequestServices.GetService<IContentDefinitionManager>();
         }
 
-        public async Task CreateContentItem(string? type, string? text, string? author)
+        public async Task CreateContentItem(string? type,string? summary, string? text, string? author)
         {
-            var contentItem = new ContentItem
-            {
-                ContentType = type,
-                DisplayText = text,
-                Author = author,
-                Owner = "",
-                PublishedUtc = DateTime.UtcNow,
-                CreatedUtc = DateTime.UtcNow,
-                ModifiedUtc = DateTime.UtcNow,
-            };
-            contentItem.ContentItemId = ContentItemIdGenerator?.GenerateUniqueId(contentItem);
-            await ContentManager.CreateAsync(contentItem);
+            var contentItem = await _contentManager.NewAsync(type);
+            contentItem.Author= author;
+            contentItem.DisplayText = summary;
+            var titlePart = contentItem.As<TitlePart>();             
+            titlePart.Title = summary;
+            titlePart.Apply();
+            var markdownPart = contentItem.As<MarkdownBodyPart>();
+            markdownPart.Markdown = text;
+            markdownPart.Apply();
+            await _contentManager.CreateAsync(contentItem);
+
         }
 
         public async Task<ItemContent> GetSingleAsync(string? Id)
@@ -44,7 +50,7 @@ namespace OrchardHeadlessCMS.Handler
                 Author = contentItem?.Author,
                 Content = JsonSerializer.Deserialize<Content?>(contentItem?.Content.ToString(), _options),
                 DisplayText = contentItem?.DisplayText,
-                ContentType = Helper.StringExtensions.AddSpacesToSentence(contentItem.ContentType, true)
+                ContentType = contentItem?.ContentType
             };
         }
 
@@ -63,7 +69,7 @@ namespace OrchardHeadlessCMS.Handler
                         Author = contentItem.Author,
                         DisplayText = contentItem.DisplayText,
                         ContentItemId = contentItem.ContentItemId,
-                        ContentType = Helper.StringExtensions.AddSpacesToSentence(contentItem.ContentType, true),
+                        ContentType = contentItem.ContentType,
                         Owner = contentItem.Owner,
                         CreatedUtc = contentItem.CreatedUtc,
                         ModifiedUtc = contentItem.ModifiedUtc,
@@ -84,6 +90,11 @@ namespace OrchardHeadlessCMS.Handler
                 return JsonSerializer.Deserialize<Content?>(contentItem?.Content.ToString(), _options);
             else
                 return null;
+        }
+        public async Task<ContentTypeDefinition?> GetTypeAsync(string? type)
+        {
+            var getContentType = _contentDefinitionManager.GetTypeDefinition(type);
+            return getContentType ?? null;
         }
 
         //public static partial class JsonSerializerExtensions

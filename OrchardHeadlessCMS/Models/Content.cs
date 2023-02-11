@@ -17,8 +17,8 @@
         public CustomFields? Home { get; set; }
         public CustomFields? Products { get; set; }
         public CustomFields? NewsAndEvents { get; set; }
-        public MarkdownBodyPart? MarkdownBodyPart { get; set; }
-        public TitlePart? TitlePart { get; set; }
+        public MarkdownBodyField? MarkdownBodyPart { get; set; }
+        public TitleField? TitlePart { get; set; }
         public LiquidPart? LiquidPart { get; set; }
     }
     public class CustomFields
@@ -43,11 +43,11 @@
     {
         public string[]? Paths { get; set; }
     }
-    public class MarkdownBodyPart
+    public class MarkdownBodyField
     {
         public string? Markdown { get; set; }
     }
-    public class TitlePart
+    public class TitleField
     {
         public string? Title { get; set; }
     }
