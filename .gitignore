@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/OrchardHeadlessCMS/App_Data/Sites/Default/appsettings.json
