@@ -19,25 +19,33 @@
         public CustomFields? NewsAndEvents { get; set; }
         public MarkdownBodyField? MarkdownBodyPart { get; set; }
         public TitleField? TitlePart { get; set; }
-        public LiquidPart? LiquidPart { get; set; }
+        public LiquidField? LiquidPart { get; set; }
     }
     public class CustomFields
     {
-        public ValueObject? Customers { get; set; }
-        public ValueObject? Users { get; set; }
-        public ValueObject? Modules { get; set; }
-        public ValueObject? Features { get; set; }
-        public ValueObject? Date { get; set; }
+        public DecimalObject? Customers { get; set; }
+        public DecimalObject? Users { get; set; }
+        public DecimalObject? Modules { get; set; }
+        public DecimalObject? Features { get; set; }
+        public DateObject? Date { get; set; }
         public TextObject? Type { get; set; }
         public Image? Image { get; set; }
     }
+    public class DateObject
+    {
+        public DateTime Value { get; set; }
+    }
     public class TextObject
     {
-        public string? Text { get; set; }
+        public string Text { get; set; }
     }
-    public class ValueObject
+    public class DecimalObject
     {
-        public object? Value { get; set; }
+        public decimal Value { get; set; }
+    }
+    public class IntObject
+    {
+        public int Value { get; set; }
     }
     public class Image
     {
@@ -51,7 +59,7 @@
     {
         public string? Title { get; set; }
     }
-    public class LiquidPart
+    public class LiquidField
     {
         public string? Liquid { get; set; }
     }

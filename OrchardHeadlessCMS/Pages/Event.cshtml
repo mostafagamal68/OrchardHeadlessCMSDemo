@@ -12,7 +12,7 @@
 </nav>
 <div class="card shadow" style="border-radius:25px">
     <div class="card-header">
-        <h5 class="d-inline">@(Convert.ToDateTime(Model?.ContentItem?.Content?.NewsAndEvents?.Date?.Value?.ToString()))</h5>
+        <h5 class="d-inline">@Model?.ContentItem?.Content?.NewsAndEvents?.Date?.Value</h5>
         <p class="d-inline m-auto">@Model?.ContentItem?.Author</p>
         <h2>@Model?.ContentItem?.DisplayText</h2>
         <div class="text-center">

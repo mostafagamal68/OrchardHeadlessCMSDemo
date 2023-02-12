@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Text.Json;
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -15,7 +16,7 @@
                 <h5>Customers</h5>
             </div>
             <div class="card-body text-center">
-                <h4>+@Model?.Data?.Home?.Customers?.Value?.ToString()</h4>
+                <h4>+@((int?)Model?.Data?.Home?.Customers?.Value)</h4>
             </div>
         </div>
     </div>
@@ -25,7 +26,7 @@
                 <h5>Users</h5>
             </div>
             <div class="card-body text-center">
-                <h4>+@Model?.Data?.Home?.Users?.Value?.ToString()</h4>
+                <h4>+@((int?)Model?.Data?.Home?.Users?.Value)</h4>
             </div>
         </div>
     </div>
@@ -35,7 +36,7 @@
                 <h5>Modules</h5>
             </div>
             <div class="card-body text-center">
-                <h4>@Model?.Data?.Home?.Modules?.Value?.ToString()</h4>
+                <h4>@((int?)Model?.Data?.Home?.Modules?.Value)</h4>
             </div>
         </div>
     </div>
@@ -45,7 +46,7 @@
                 <h5>Features</h5>
             </div>
             <div class="card-body text-center">
-                <h4>+@Model?.Data?.Home?.Features?.Value?.ToString()</h4>
+                <h4>+@((int?)Model?.Data?.Home?.Features?.Value)</h4>
             </div>
         </div>
     </div>
@@ -63,9 +64,9 @@
             <div class="row m-3">
                 @if (index % 2 == 0)
                 {
-                <div class="col-12 col-lg-6 text-center my-auto">
-                    <img class="w-100" src="/media/@item?.Content?.Products?.Image?.Paths?[0].ToString()" />
-                </div>
+                    <div class="col-12 col-lg-6 text-center my-auto">
+                        <img class="w-100" src="/media/@item?.Content?.Products?.Image?.Paths?[0].ToString()" />
+                    </div>
                 }
                 <div class="col m-auto">
                     <h1>@item?.Content?.TitlePart?.Title</h1>
@@ -75,9 +76,9 @@
                 </div>
                 @if (index % 2 != 0)
                 {
-                <div class="col-12 col-lg-6 text-center my-auto">
-                    <img class="w-100" src="/media/@item?.Content?.Products?.Image?.Paths?[0].ToString()" />
-                </div>
+                    <div class="col-12 col-lg-6 text-center my-auto">
+                        <img class="w-100" src="/media/@item?.Content?.Products?.Image?.Paths?[0].ToString()" />
+                    </div>
                 }
             </div>
         </div>

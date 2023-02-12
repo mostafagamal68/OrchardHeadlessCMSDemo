@@ -20,7 +20,7 @@
                     <img class="w-100" src="/media/@item?.Content?.NewsAndEvents?.Image?.Paths?[0].ToString()"/>
                 </div>
                 <div class="col">
-                    <h5>@(Convert.ToDateTime(item?.Content?.NewsAndEvents?.Date?.Value?.ToString()))</h5>
+                    <h5>@item?.Content?.NewsAndEvents?.Date?.Value</h5>
                     <h4>@item?.Content?.TitlePart?.Title</h4>
                     <p>@item?.Content?.MarkdownBodyPart?.Markdown?.Substring(0,200) ...</p>
                     <a class="btn btn-outline-primary" role="button" href="/News/@item?.ContentItemId">Read More</a>

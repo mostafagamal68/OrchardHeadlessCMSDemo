@@ -39,7 +39,6 @@ namespace OrchardHeadlessCMS.Handler
             markdownPart.Markdown = text;
             markdownPart.Apply();
             await _contentManager.CreateAsync(contentItem);
-
         }
 
         public async Task<ItemContent> GetSingleAsync(string? Id)
