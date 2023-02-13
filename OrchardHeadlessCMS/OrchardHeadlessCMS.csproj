@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Commentator.OrchardCore" Version="1.4.0" />
 		<PackageReference Include="OrchardCore.Application.Cms.Core.Targets" Version="1.5.0" />
 		<PackageReference Include="OrchardCore.Translations.ar" Version="1.5.0" />
 	</ItemGroup>

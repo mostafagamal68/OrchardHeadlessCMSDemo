@@ -44,6 +44,8 @@
         }
         <div class="container">
             <form method="post">
+                @*@Html.HiddenFor(model => model.ContentItem.Id)*@
+                <input type="hidden" for="id" id="id" name="id" value="@Model?.ContentItem?.ContentItemId"/>
                 <div class="col-12 col-lg-6 m-2">
                     <div class="row">
                         <label for="author" class="col-3 form-label my-auto">Name</label>

@@ -22,13 +22,13 @@ namespace OrchardHeadlessCMS.Pages
         
         public async Task OnGetAsync()
         {
-            ContentTypeDefinition = await _handler.GetTypeAsync("Reviews");
+            ContentTypeDefinition = _handler.GetTypeAsync("Reviews");
             Reviews = await _handler.GetListByTypeAsync("Reviews");
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _handler.CreateContentItem("Reviews", Request.Form["summary"], Request.Form["comment"], Request.Form["author"]);
+            await _handler.PostReview("Reviews", Request.Form["summary"], Request.Form["comment"], Request.Form["author"], Convert.ToDecimal(Request.Form["stars"]));
             return RedirectToPage("Reviews");
         }
     }

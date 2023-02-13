@@ -26,14 +26,14 @@ namespace OrchardHeadlessCMS.Pages
 
         public async Task OnGetAsync()
         {
-            ContentTypeDefinition = await _handler.GetTypeAsync("NewsAndEvents");
+            ContentTypeDefinition = _handler.GetTypeAsync("NewsAndEvents");
             ContentItem = await _handler.GetSingleAsync(Id);
             Comments = await _handler.GetListByTypeAsync("Comentats");
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _handler.CreateContentItem("Comentats", Request.Form["summary"], Request.Form["comment"], Request.Form["author"]);
+            await _handler.PostComment(Request.Form["id"], "Comentats", Request.Form["summary"], Request.Form["comment"], Request.Form["author"]);
             return RedirectToPage("Event",Id);
         }
     }

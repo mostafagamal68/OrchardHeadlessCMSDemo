@@ -19,7 +19,7 @@ namespace OrchardHeadlessCMS.Pages
 
         public async Task OnGetAsync()
         {
-            ContentTypeDefinition = await _handler.GetTypeAsync("NewsAndEvents");
+            ContentTypeDefinition = _handler.GetTypeAsync("NewsAndEvents");
             Data = await _handler.GetListByTypeAsync("NewsAndEvents");
         }        
     }    
