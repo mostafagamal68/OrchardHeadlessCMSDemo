@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Nest;
-using OrchardCore;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardHeadlessCMS.Handler;
 using OrchardHeadlessCMS.Models;
-using System.Text.Json;
 
 namespace OrchardHeadlessCMS.Pages
 {

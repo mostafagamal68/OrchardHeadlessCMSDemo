@@ -24,26 +24,19 @@
                             <div class="card-body">
                                 <h5>@review.CreatedUtc</h5>
                                 <strong>@review.Author</strong>
-                                <h6>@review.Content?.TitlePart?.Title?.ToString()</h6>
-                                <p>@review.Content?.MarkdownBodyPart?.Markdown?.ToString()</p>
+                                <p class="my-2">
+                                    @for (int i = 1; i <= (int?)review?.Content?.Reviews?.Stars?.Value; i++)
+                                    {
+                                        <span class="bi bi-star-fill"></span>
+                                    }
+                                </p>
+                                <h6>@review?.Content?.TitlePart?.Title?.ToString()</h6>
+                                <p>@review?.Content?.MarkdownBodyPart?.Markdown?.ToString()</p>
                             </div>
                         </div>
                     </div>
                 }
             </div>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-end">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
         }
         else
         {
@@ -60,13 +53,26 @@
             </div>
             <div class="col-12 col-lg-6 m-2">
                 <div class="row">
-                    <label for="comment" class="col-3 form-label my-auto">Summary</label>
+                    <label for="summary" class="col-3 form-label my-auto">Summary</label>
                     <input type="text" class="col form-control me-lg-0 me-3" id="summary" name="summary" />
                 </div>
             </div>
             <div class="col-12 col-lg-6 m-2">
                 <div class="row">
-                    <label for="summary" class="col-3 form-label my-auto">Comment</label>
+                    <label for="stars" class="col-3 form-label my-auto">Rate</label>
+                    <select class="col form-select me-lg-0 me-3" id="stars" name="stars">
+                        <option value="0" selected hidden>Select Rate</option>
+                        <option value="1">1 Star</option>
+                        <option value="2">2 Stars</option>
+                        <option value="3">3 Stars</option>
+                        <option value="4">4 Stars</option>
+                        <option value="5">5 Stars</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 m-2">
+                <div class="row">
+                    <label for="comment" class="col-3 form-label my-auto">Comment</label>
                     <textarea type="text" class="col form-control me-lg-0 me-3" id="comment" name="comment"></textarea>
                 </div>
             </div>

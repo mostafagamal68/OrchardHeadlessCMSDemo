@@ -24,18 +24,18 @@
     </div>
     <div class="card-footer" style="border-radius:0 0 25px 25px">
         <h3>Comments</h3>
-        @if (Model?.Comments?.Count != 0)
+        @if (Model?.ContentItem?.Content?.CommentsForNews?.ContentItems?.Count != 0)
         {
             <div class="row">
-                @foreach (var comment in Model.Comments)
+                @foreach (var comment in Model.ContentItem.Content.CommentsForNews.ContentItems)
                 {
                     <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-2">
                         <div class="card" style="border-radius:25px">
                             <div class="card-body">
                                 <h5>@comment.CreatedUtc</h5>
                                 <strong>@comment.Author</strong>
-                                <h6>@comment.Content?.TitlePart?.Title?.ToString()</h6>
-                                <p>@comment.Content?.MarkdownBodyPart?.Markdown?.ToString()</p>
+                                <h6>@comment.TitlePart?.Title?.ToString()</h6>
+                                <p>@comment.MarkdownBodyPart?.Markdown?.ToString()</p>
                             </div>
                         </div>
                     </div>
@@ -44,7 +44,6 @@
         }
         <div class="container">
             <form method="post">
-                @*@Html.HiddenFor(model => model.ContentItem.Id)*@
                 <input type="hidden" for="id" id="id" name="id" value="@Model?.ContentItem?.ContentItemId"/>
                 <div class="col-12 col-lg-6 m-2">
                     <div class="row">

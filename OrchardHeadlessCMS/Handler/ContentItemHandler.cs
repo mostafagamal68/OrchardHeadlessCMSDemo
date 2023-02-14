@@ -1,5 +1,4 @@
-﻿using Markdig;
-using OrchardCore;
+﻿using OrchardCore;
 using OrchardCore.ContentFields.Fields;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
@@ -8,7 +7,6 @@ using OrchardCore.Flows.Models;
 using OrchardCore.Markdown.Models;
 using OrchardCore.Title.Models;
 using OrchardHeadlessCMS.Models;
-using System.Text;
 using System.Text.Json;
 
 namespace OrchardHeadlessCMS.Handler
@@ -29,20 +27,13 @@ namespace OrchardHeadlessCMS.Handler
             _contentDefinitionManager = _orchardHelper.HttpContext.RequestServices.GetService<IContentDefinitionManager>();
         }
 
-        public async Task CreateContentItem(string? type,string? summary, string? text, string? author)
-        {
-            await _contentManager.CreateAsync(await BuildContentItem(type, summary,text,author));
-        }
-
-        public async Task<ContentItem?> BuildContentItem(string? type, string? summary, string? text, string? author)
+        private async Task<ContentItem?> BuildContentItem(string? type, string? summary, string? text, string? author)
         {
             var contentItem = await _contentManager.NewAsync(type);
-            contentItem.Author= author;
-            contentItem.DisplayText = summary;
+            contentItem.Author = author; contentItem.Owner = ""; contentItem.DisplayText = summary;
             contentItem.CreatedUtc = DateTime.UtcNow; contentItem.ModifiedUtc = DateTime.UtcNow; contentItem.PublishedUtc = DateTime.UtcNow;
             contentItem.Latest = true; contentItem.Published = true;
-            contentItem.Owner = "";
-            var titlePart = contentItem.As<TitlePart>();             
+            var titlePart = contentItem.As<TitlePart>();
             titlePart.Title = summary;
             titlePart.Apply();
             var markdownPart = contentItem.As<MarkdownBodyPart>();
@@ -51,9 +42,23 @@ namespace OrchardHeadlessCMS.Handler
             return contentItem;
         }
 
+        private ItemContent BuildItemContent(ContentItem? contentItem) => new ItemContent
+        {
+            Id = contentItem?.Id,
+            Author = contentItem?.Author,
+            DisplayText = contentItem?.DisplayText,
+            ContentItemId = contentItem?.ContentItemId,
+            ContentType = contentItem?.ContentType,
+            Owner = contentItem?.Owner,
+            CreatedUtc = contentItem?.CreatedUtc,
+            ModifiedUtc = contentItem?.ModifiedUtc,
+            PublishedUtc = contentItem?.PublishedUtc,
+            Content = JsonSerializer.Deserialize<Content?>(contentItem?.Content.ToString(), _options)
+        };
+
         public async Task PostComment(string? id, string? type, string? summary, string? text, string? author)
         {
-            var contentItem = await _orchardHelper.GetContentItemByIdAsync(id);            
+            var contentItem = await _orchardHelper.GetContentItemByIdAsync(id);
             var newContentItem = await BuildContentItem(type, summary, text, author);
             contentItem.Alter<BagPart>("CommentsForNews", x =>
             {
@@ -62,11 +67,11 @@ namespace OrchardHeadlessCMS.Handler
             await _contentManager.UpdateAsync(contentItem);
         }
         public async Task PostReview(string? type, string? summary, string? text, string? author, decimal? stars)
-        {         
-            var newContentItem = await BuildContentItem(type, summary, text, author);            
-            newContentItem.Alter<NumericField>("Stars", x =>
+        {
+            var newContentItem = await BuildContentItem(type, summary, text, author);
+            newContentItem.Alter<ContentPart>(type, x =>
             {
-                x.Value = stars;
+                x.Alter<NumericField>("Stars", c => c.Value = stars);
             });
             await _contentManager.CreateAsync(newContentItem);
         }
@@ -74,15 +79,7 @@ namespace OrchardHeadlessCMS.Handler
         public async Task<ItemContent> GetSingleAsync(string? Id)
         {
             var contentItem = await _orchardHelper.GetContentItemByIdAsync(Id);
-            return new ItemContent
-            {
-                Id = contentItem?.Id,
-                ContentItemId = contentItem?.ContentItemId,
-                Author = contentItem?.Author,
-                Content = JsonSerializer.Deserialize<Content?>(contentItem?.Content.ToString(), _options),
-                DisplayText = contentItem?.DisplayText,
-                ContentType = contentItem?.ContentType
-            };
+            return BuildItemContent(contentItem);
         }
 
         public async Task<List<ItemContent>?> GetListByTypeAsync(string? type)
@@ -94,20 +91,8 @@ namespace OrchardHeadlessCMS.Handler
             {
                 var ContentItems = new List<ItemContent>();
                 foreach (var contentItem in result)
-                {
-                    ContentItems.Add(new ItemContent
-                    {
-                        Author = contentItem.Author,
-                        DisplayText = contentItem.DisplayText,
-                        ContentItemId = contentItem.ContentItemId,
-                        ContentType = contentItem.ContentType,
-                        Owner = contentItem.Owner,
-                        CreatedUtc = contentItem.CreatedUtc,
-                        ModifiedUtc = contentItem.ModifiedUtc,
-                        PublishedUtc = contentItem.PublishedUtc,
-                        Content = JsonSerializer.Deserialize<Content?>(contentItem?.Content.ToString(), _options)
-                    });
-                }
+                    ContentItems.Add(BuildItemContent(contentItem));
+
                 return ContentItems;
             }
             return null;
@@ -119,14 +104,9 @@ namespace OrchardHeadlessCMS.Handler
             var contentItem = getContentItem.FirstOrDefault();
             if (contentItem != null)
                 return JsonSerializer.Deserialize<Content?>(contentItem?.Content.ToString(), _options);
-            else
-                return null;
+            return null;
         }
-        public ContentTypeDefinition GetTypeAsync(string? type)
-        {
-            var getContentType = _contentDefinitionManager.GetTypeDefinition(type);
-            return getContentType;
-        }
+        public ContentTypeDefinition GetTypeAsync(string? type) => _contentDefinitionManager.GetTypeDefinition(type);
 
         //public static partial class JsonSerializerExtensions
         //{

@@ -18,9 +18,17 @@
         public CustomFields? Home { get; set; }
         public CustomFields? Products { get; set; }
         public CustomFields? NewsAndEvents { get; set; }
+        public CustomFields? Reviews { get; set; }
         public MarkdownBodyField? MarkdownBodyPart { get; set; }
         public TitleField? TitlePart { get; set; }
         public LiquidField? LiquidPart { get; set; }
+        public CommentsForNews? CommentsForNews { get; set; }
+        public string? Author { get; set; }
+        public DateTime? CreatedUtc { get; set; }
+    }
+    public class CommentsForNews
+    {
+        public List<Content>? ContentItems { get; set; }
     }
     public class CustomFields
     {
@@ -28,6 +36,7 @@
         public DecimalObject? Users { get; set; }
         public DecimalObject? Modules { get; set; }
         public DecimalObject? Features { get; set; }
+        public DecimalObject? Stars { get; set; }
         public DateObject? Date { get; set; }
         public TextObject? Type { get; set; }
         public Image? Image { get; set; }
